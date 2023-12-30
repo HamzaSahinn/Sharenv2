@@ -2,10 +2,32 @@ import React from 'react';
 import './App.css';
 import SignInSignUp from './views/SignInSignUpForm/SignInSignUpForm.Public';
 import { AuthProvider } from 'react-auth-kit';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
 import { RequireAuth } from 'react-auth-kit'
 import Dashboard from './views/Dashboard/Dashboard.Private';
 import Home from './views/Home/Home.Public';
+import DashboardLayout from './layouts/Dashboard.Layout';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/login",
+    element: <SignInSignUp />
+  },
+  {
+    path: "/dashboard",
+    element: <RequireAuth loginPath={'/login'}><DashboardLayout /></RequireAuth>,
+    children: [
+      {
+        index: true,
+        element: <Dashboard />
+      }
+    ]
+  }
+]);
 
 function App() {
   return (
@@ -13,19 +35,7 @@ function App() {
       authName={'_auth'}
       cookieDomain={window.location.hostname}
       cookieSecure={window.location.protocol === "https:"}>
-      <div className="flex w-full justify-center items-center h-screen">
-        <BrowserRouter>
-          <Routes>
-            <Route path='/' element={
-              <Home />
-            } />
-            <Route path="/login" element={<SignInSignUp />} />
-            <Route path='/dashboard' element={<RequireAuth loginPath={'/login'}>
-              <Dashboard />
-            </RequireAuth>} />
-          </Routes>
-        </BrowserRouter>
-      </div>
+      <RouterProvider router={router} />
     </AuthProvider>
 
   );

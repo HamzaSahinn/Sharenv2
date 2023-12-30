@@ -1,12 +1,13 @@
 import "./index.css"
 import Logo from './../../assets/image/logoBlue.jpg'
+
 export default function Home() {
     return (
 
         <header className="">
             <div className="container px-6 mx-auto">
                 <nav className="flex flex-col py-6 sm:flex-row sm:justify-between sm:items-center">
-                    <a href="/" className="text-4xl font-semibold flex flex-row gap-3 items-center text-slate-200 pr-4 hover:bg-blue-700/60 bg-blue-800/60 rounded-lg">
+                    <a href="/" className="text-4xl font-semibold flex flex-row gap-3 items-center text-white pr-4 hover:bg-blue-700/60 bg-blue-800/60 rounded-lg">
                         <img className="w-auto h-16 rounded-lg" src={Logo} alt="Sharenv Logo" />
                         SHARENV
                     </a>
