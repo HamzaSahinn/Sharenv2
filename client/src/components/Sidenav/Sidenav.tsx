@@ -30,10 +30,12 @@ import {
     MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import Logo from './../../assets/image/logoBlue.jpg'
+import LogoutWrapper from "../LogoutWrapper/LogoutWrapper";
 
 export function Sidenav({ openSidenav, setOpenSidenav }: { openSidenav: boolean, setOpenSidenav: React.Dispatch<React.SetStateAction<boolean>> }) {
     const [open, setOpen] = React.useState<number>(0);
     const [openAlert, setOpenAlert] = React.useState(true);
+
 
     const handleOpen = (value: number) => {
         setOpen(open === value ? 0 : value);
@@ -172,12 +174,20 @@ export function Sidenav({ openSidenav, setOpenSidenav }: { openSidenav: boolean,
                             </ListItemPrefix>
                             Settings
                         </ListItem>
-                        <ListItem>
-                            <ListItemPrefix>
-                                <PowerIcon className="h-5 w-5" />
-                            </ListItemPrefix>
-                            Log Out
-                        </ListItem>
+                        <LogoutWrapper>
+
+                            <ListItem>
+                                <div className="flex flex-row w-full">
+                                    <ListItemPrefix>
+                                        <PowerIcon className="h-5 w-5" />
+                                    </ListItemPrefix>
+                                    Log Out
+                                </div>
+
+
+                            </ListItem>
+                        </LogoutWrapper>
+
                     </List>
                     <Alert
                         open={openAlert}

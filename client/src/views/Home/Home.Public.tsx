@@ -1,7 +1,58 @@
 import "./index.css"
 import Logo from './../../assets/image/logoBlue.jpg'
+import { useState } from "react"
+import axios from "axios"
+import { useSignIn } from 'react-auth-kit'
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Button } from "@material-tailwind/react"
+type SignInData = {
+    signInEmail: string,
+    signInPassword: string
+}
 
 export default function Home() {
+    const [signInForm, setSignInForm] = useState<SignInData>({ signInEmail: '', signInPassword: '' })
+    const signIn = useSignIn()
+    const navigation = useNavigate()
+    const [isSignInLoading, setIsSignInLoading] = useState<boolean>(false)
+
+    function handleSignInFormChange(e: any) {
+        setSignInForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+    }
+
+    async function handleSignIn(e: any) {
+        try {
+            e.preventDefault()
+            if (Object.values(signInForm).every(obj => { return obj })) {
+                setIsSignInLoading(true)
+
+                const res = await axios.post('http://localhost:8080/auth/login', { email: signInForm.signInEmail, password: signInForm.signInPassword })
+                if (signIn(
+                    {
+                        token: res.data.token,
+                        expiresIn: res.data.expiresIn,
+                        tokenType: "Bearer",
+                        authState: res.data.authUserState,
+
+                    }
+                )) {
+                    navigation("/dashboard")
+
+                } else {
+                    //Throw error
+                }
+
+                setIsSignInLoading(false)
+            }
+
+        }
+        catch (error) {
+            console.log(error)
+            setIsSignInLoading(false)
+        }
+
+    }
+
     return (
 
         <header className="">
@@ -34,16 +85,21 @@ export default function Home() {
                             <div className="px-6 py-8 text-center">
                                 <h2 className="text-2xl font-semibold text-gray-700 dark:text-white fo">Sign In</h2>
 
-                                <form action="#">
+                                <form>
                                     <div className="mt-4">
-                                        <input className="block w-full px-4 py-2 text-gray-700 placeholder-gray-400 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-500 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:ring-blue-300 focus:outline-none focus:ring" type="email" placeholder="Email address" aria-label="Email address" />
-                                        <input className="block w-full px-4 py-2 mt-4 text-gray-700 placeholder-gray-400 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-500 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:ring-blue-300 focus:outline-none focus:ring" type="password" placeholder="Password" aria-label="Password" />
+                                        <input className="block w-full px-4 py-2 text-gray-700 placeholder-gray-400 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:ring-blue-300 focus:outline-none focus:ring"
+                                            onChange={handleSignInFormChange} name="signInEmail" type="email" placeholder="Email address" aria-label="Email address" />
+                                        <input className="block w-full px-4 py-2 mt-4 text-gray-700 placeholder-gray-400 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-500 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:ring-blue-300 focus:outline-none focus:ring"
+                                            onChange={handleSignInFormChange} name="signInPassword" type="password" placeholder="Password" aria-label="Password" />
                                     </div>
 
                                     <div className="flex items-center justify-between mt-4">
                                         <a href="#" className="text-sm text-gray-600 dark:text-gray-200 hover:underline">Forget Password?</a>
 
-                                        <button className="px-6 py-2 font-medium text-white transition-colors duration-300 transform bg-gray-900 rounded-md hover:bg-gray-800 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-800 dark:focus:bg-gray-700">Sign In</button>
+                                        <Button loading={isSignInLoading} onClick={handleSignIn}
+                                            className="px-6 py-2 ">
+                                            Sign In
+                                        </Button>
                                     </div>
                                 </form>
                             </div>
