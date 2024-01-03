@@ -8,7 +8,7 @@ export default function DashboardLayout() {
         <>
             <DashboardNavbar />
             <div className="p-5">
-                <div className=" p-4 rounded-xl bg-white w-full ">
+                <div className=" p-4 rounded-xl bg-gray-900 w-full ">
                     <Outlet />
                 </div>
             </div>

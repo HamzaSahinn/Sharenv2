@@ -7,6 +7,7 @@ import { RequireAuth } from 'react-auth-kit'
 import Dashboard from './views/Dashboard/Dashboard.Private';
 import Home from './views/Home/Home.Public';
 import DashboardLayout from './layouts/Dashboard.Layout';
+import FilesPage from './views/Dashboard/Files.Private';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />
+      },
+      {
+        path: 'files',
+        element: <FilesPage />
       }
     ]
   }

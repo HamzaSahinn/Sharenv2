@@ -1,4 +1,3 @@
-import { Sidenav } from "../../components/Sidenav/Sidenav";
 
 export default function Dashboard() {
     return (
