@@ -4,6 +4,7 @@ import { Response } from "express";
 interface TokenPayload {
   userId: string;
   userEmail: string;
+  userName: string;
 }
 
 const generateToken = (payload: TokenPayload) => {
@@ -11,7 +12,7 @@ const generateToken = (payload: TokenPayload) => {
   const token = jwt.sign(payload, jwtSecret, {
     expiresIn: "1h",
   });
-  return token
+  return token;
 };
 
 const generateRefreshToken = (payload: TokenPayload) => {
@@ -19,12 +20,12 @@ const generateRefreshToken = (payload: TokenPayload) => {
   const token = jwt.sign(payload, jwtSecret, {
     expiresIn: "1d",
   });
-  return token
-}
+  return token;
+};
 
 const clearToken = (res: Response) => {
   res.cookie("jwt", "", {
-    httpOnly: true,
+    httpOnly: false,
     expires: new Date(0),
   });
 };

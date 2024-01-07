@@ -22,11 +22,19 @@ import {
     ListBulletIcon
 } from "@heroicons/react/24/outline";
 import Logo from './../../assets/image/logoBlue.jpg'
-import LogoutWrapper from "../LogoutWrapper/LogoutWrapper";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import axios from "axios";
 
 export function Sidenav({ openSidenav, setOpenSidenav }: { openSidenav: boolean, setOpenSidenav: React.Dispatch<React.SetStateAction<boolean>> }) {
+    const [cookies, setCookie, removeCookie] = useCookies(["jwt"]);
+    const navigate = useNavigate();
 
+    const logOut = async () => {
+        removeCookie("jwt");
+        await axios.get(`${process.env.REACT_APP_API_ROUTE}/auth/logout`, { withCredentials: true })
+        navigate("/login");
+    };
     return (
         <>
             <Drawer open={openSidenav} onClose={() => setOpenSidenav(false)}>
@@ -55,6 +63,15 @@ export function Sidenav({ openSidenav, setOpenSidenav }: { openSidenav: boolean,
                             </ListItem>
                         </Link>
 
+                        <Link to={"/dashboard/sharedFiles"} onClick={() => { setOpenSidenav(false) }}>
+                            <ListItem>
+                                <ListItemPrefix>
+                                    <InboxIcon className="h-6 w-6" />
+                                </ListItemPrefix>
+                                Shared With Me
+                            </ListItem>
+                        </Link>
+
                         <ListItem>
                             <ListItemPrefix>
                                 <GlobeAsiaAustraliaIcon className="h-6 w-6" />
@@ -69,16 +86,14 @@ export function Sidenav({ openSidenav, setOpenSidenav }: { openSidenav: boolean,
                             Lists
                         </ListItem>
 
-                        <LogoutWrapper>
-                            <ListItem>
-                                <div className="flex flex-row w-full">
-                                    <ListItemPrefix>
-                                        <PowerIcon className="h-6 w-6" />
-                                    </ListItemPrefix>
-                                    Log Out
-                                </div>
-                            </ListItem>
-                        </LogoutWrapper>
+                        <ListItem onClick={logOut}>
+                            <div className="flex flex-row w-full">
+                                <ListItemPrefix>
+                                    <PowerIcon className="h-6 w-6" />
+                                </ListItemPrefix>
+                                Log Out
+                            </div>
+                        </ListItem>
                     </List>
                 </Card>
             </Drawer>

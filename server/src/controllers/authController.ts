@@ -11,8 +11,6 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
   const userExists = await User.findOne({ email });
 
-  console.log(name, email, password)
-
   if (userExists) {
     res.status(409).json({ message: "The email already exists" });
   }
@@ -24,27 +22,24 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
   });
 
   if (user) {
-    const token = generateToken( {
+    const token = generateToken({
       userId: user._id.toString(),
       userEmail: user.email,
+      userName: user.name,
     });
 
-    const refreshToken = generateRefreshToken( {
-      userId: user._id.toString(),
-      userEmail: user.email,
-    });
-
-    res.status(200).json({
-      authUserState:{
+    res
+      .status(200)
+      .cookie("jwt", token, {
+        httpOnly: false,
+        maxAge: 3 * 24 * 60 * 60 * 1000,
+      })
+      .json({
         id: user._id,
         name: user.name,
-        email: user.email
-      },
-      accessToken:token,
-      expiresIn:60,
-      refreshToken,
-      refreshTokenExpireIn: 24*60
-    });
+        email: user.email,
+        accessToken: token,
+      });
   } else {
     throw new BadRequestError("An error occurred in registering the user");
   }
@@ -55,29 +50,24 @@ const authenticateUser = asyncHandler(async (req: Request, res: Response) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.comparePassword(password))) {
-    
     const token = generateToken({
       userId: user._id.toString(),
       userEmail: user.email,
+      userName: user.name,
     });
 
-    const refreshToken = generateRefreshToken( {
-      userId: user._id.toString(),
-      userEmail: user.email,
-    });
-
-    res.status(200).json({
-      authUserState:{
+    res
+      .cookie("jwt", token, {
+        httpOnly: false,
+        maxAge: 3 * 24 * 60 * 60 * 1000,
+      })
+      .status(200)
+      .json({
         id: user._id,
         name: user.name,
-        email: user.email
-      },
-      accessToken:token,
-      expiresIn:60,
-      refreshToken,
-      refreshTokenExpireIn: 24*60
-    });
-    
+        email: user.email,
+        accessToken: token,
+      });
   } else {
     throw new AuthenticationError("User not found / password incorrect");
   }

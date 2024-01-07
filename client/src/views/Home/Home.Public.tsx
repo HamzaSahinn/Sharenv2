@@ -26,7 +26,7 @@ export default function Home() {
             if (Object.values(signInForm).every(obj => { return obj })) {
                 setIsSignInLoading(true)
 
-                const res = await axios.post('http://localhost:8080/auth/login', { email: signInForm.signInEmail, password: signInForm.signInPassword })
+                const res = await axios.post(`${process.env.REACT_APP_API_ROUTE}/auth/login`, { email: signInForm.signInEmail, password: signInForm.signInPassword })
                 if (signIn(
                     {
                         token: res.data.token,

@@ -3,11 +3,12 @@ import './App.css';
 import SignInSignUp from './views/SignInSignUpForm/SignInSignUpForm.Public';
 import { AuthProvider } from 'react-auth-kit';
 import { BrowserRouter, Route, RouterProvider, Routes, createBrowserRouter } from "react-router-dom";
-import { RequireAuth } from 'react-auth-kit'
 import Dashboard from './views/Dashboard/Dashboard.Private';
 import Home from './views/Home/Home.Public';
 import DashboardLayout from './layouts/Dashboard.Layout';
 import FilesPage from './views/Dashboard/Files.Private';
+import axios from 'axios';
+import SharedFilesPage from './views/Dashboard/SharedFiles.Private';
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <RequireAuth loginPath={'/login'}><DashboardLayout /></RequireAuth>,
+    element: <DashboardLayout />,
     children: [
       {
         index: true,
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: 'files',
         element: <FilesPage />
+      },
+      {
+        path: "sharedFiles",
+        element: <SharedFilesPage />
       }
     ]
   }

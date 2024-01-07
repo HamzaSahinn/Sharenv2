@@ -3,8 +3,6 @@ import ClientFilesTable from "../../components/ClientFilesTable/ClientFilesTable
 import ClientFileUpload from "../../components/ClientFileUpload/ClientFileUpload";
 export default function FilesPage() {
 
-
-
     return (
         <>
             <div className="bg-gray-900 w-full p-5">

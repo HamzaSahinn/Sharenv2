@@ -10,13 +10,13 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Sidenav } from "../Sidenav/Sidenav";
 import Logo from './../../assets/image/logoBlue.jpg'
-import { useSignOut } from "react-auth-kit";
 import { AvatarMenu } from "../AvatarMenu/AvatarMenu";
 
 export function DashboardNavbar() {
     const [openNav, setOpenNav] = useState<boolean>(false);
     const [openSidenav, setOpenSidenav] = useState<boolean>(false)
-    const signOut = useSignOut()
+
+
 
     React.useEffect(() => {
         window.addEventListener(

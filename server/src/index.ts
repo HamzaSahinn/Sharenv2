@@ -1,19 +1,18 @@
 import express from "express";
 import { Application } from "express";
-import mongoose from "mongoose";
-import cors from "cors";
 import dotenv from "dotenv";
-import User from "./models/user";
 import authRouter from "./routes/authRouter";
 import connectMongoDB from "./connections/mongodb";
-const bcrypt = require('bcrypt');
-var cookieParser = require('cookie-parser')
+import filesRouter from "./routes/filesRouter";
+import dbRouter from "./routes/dbRouter";
+import shareRouter from "./routes/shareRouter";
+
+var cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 // Create the express app and  import the type of app from express;
 const app: Application = express();
 
-// Cors
-app.use(cors());
 //configure env;
 dotenv.config();
 // Parser
@@ -23,12 +22,20 @@ app.use(
     extended: true,
   })
 );
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 interface UserBasicInfo {
   _id: string;
   email: string;
-  roles: string[];
+  name: string;
 }
 
 declare global {
@@ -40,18 +47,25 @@ declare global {
 }
 
 app.get("/", (req, res) => {
-  res.send("<h1>Welcome To JWT Authentication </h1>");
+  res.send("<h1>Welcome To Sharenv Backend </h1>");
 });
 
 app.use("/auth", authRouter);
 
+app.use("/file", filesRouter);
+
+app.use("/dbActions", dbRouter);
+
+app.use("/share", shareRouter);
 
 const start = async (): Promise<void> => {
   try {
     console.log(`⚡️[server]: Server is trying to initiate db connection`);
     await connectMongoDB();
     app.listen(process.env.PORT, () => {
-      console.log(`⚡️[server]: Server is running at http://localhost:${process.env.PORT}`);
+      console.log(
+        `⚡️[server]: Server is running at http://localhost:${process.env.PORT}`
+      );
     });
   } catch (error) {
     console.error(error);

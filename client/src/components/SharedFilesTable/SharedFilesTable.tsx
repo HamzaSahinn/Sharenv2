@@ -3,25 +3,22 @@ import { useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../../context/authContext";
 import axios from "axios";
-import { UserFile } from "../../types";
+import { SharedFiles, UserFile } from "../../types";
 import { DocumentTextIcon, PhotoIcon, EllipsisVerticalIcon, CloudArrowDownIcon, TrashIcon, ShareIcon } from "@heroicons/react/24/outline";
 import { dateString2HumanReadableDate, parseFileSize } from "../../utils/convertions";
 import { useNavigate } from "react-router-dom";
-import ShareDialog from "../ShareDialog/ShareDialog";
 
 
 
-export default function ClientFilesTable() {
+export default function SharedFilesTable() {
     const { _id, name, mail } = useContext(AuthContext);
-    const [userFiles, setUserFiles] = useState<UserFile[]>()
-    const [openShareDialog, setOpenShareDialog] = useState<boolean>(false)
-    const [selectedFile, setSelectedFile] = useState<UserFile>()
-    const navigate = useNavigate()
+    const [userFiles, setUserFiles] = useState<SharedFiles[]>()
 
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (_id) {
-            axios.get(`${process.env.REACT_APP_API_ROUTE}/dbActions/userFiles/${_id}`, { withCredentials: true }).then(res => { if (res.status === 200) { setUserFiles(res.data) } })
+            axios.get(`${process.env.REACT_APP_API_ROUTE}/dbActions/sharedFiles/${_id}`, { withCredentials: true }).then(res => { if (res.status === 200) { setUserFiles(res.data) } })
         }
     }, [_id])
 
@@ -75,11 +72,11 @@ export default function ClientFilesTable() {
                                         </th>
 
                                         <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                            Date Uploaded
+                                            File Owner
                                         </th>
 
                                         <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                            Last Updated
+                                            Date Shared
                                         </th>
 
                                         <th scope="col" className="relative py-3.5 px-4">
@@ -99,14 +96,16 @@ export default function ClientFilesTable() {
                                                             </div>
 
                                                             <div>
-                                                                <h2 className="font-normal text-sm text-white ">{file.name}</h2>
+                                                                <h2 className="font-normal text-sm text-white ">{file.fileName}</h2>
                                                                 <p className="text-xs font-normal text-gray-500 dark:text-gray-400">{parseFileSize(file.fileSize)}</p>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{dateString2HumanReadableDate(file.createdAt)}</td>
-                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{dateString2HumanReadableDate(file.updatedAt)}</td>
+                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{file.ownerName}</td>
+
+                                                <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">{dateString2HumanReadableDate(file.sharedAt)}</td>
+
                                                 <td className="px-4 py-4 text-sm whitespace-nowrap">
 
                                                     <Popover placement="bottom">
@@ -125,7 +124,7 @@ export default function ClientFilesTable() {
                                                                     <TrashIcon className="w-6 h-6" />
                                                                 </IconButton>
 
-                                                                <IconButton size="sm" className="text-green-600 hover:text-green-700 hover:bg-gray-700" onClick={() => { setSelectedFile(file); setOpenShareDialog(true) }}>
+                                                                <IconButton size="sm" className="text-green-600 hover:text-green-700 hover:bg-gray-700">
                                                                     <ShareIcon className="w-6 h-6" />
                                                                 </IconButton>
                                                             </div>
@@ -143,8 +142,6 @@ export default function ClientFilesTable() {
                     </div>
                 </div>
             </div>
-            <ShareDialog isOpen={openShareDialog} setOpen={setOpenShareDialog} fileId={selectedFile?._id || ""} />
-
         </section>
     )
 }
