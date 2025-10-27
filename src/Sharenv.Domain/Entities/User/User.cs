@@ -22,7 +22,7 @@ namespace Sharenv.Domain.Entities
         /// <summary>
         /// Gets or sets emailVerified
         /// </summary>
-        public bool EmailVerified { get; set; }
+        public bool IsEmailVerified { get; set; }
 
         /// <summary>
         /// Gets or sets name
