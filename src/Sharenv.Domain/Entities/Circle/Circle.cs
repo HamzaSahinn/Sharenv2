@@ -12,5 +12,10 @@ namespace Sharenv.Domain.Entities
         /// gets or sets description
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets isPublic
+        /// </summary>
+        public bool IsPublic { get; set; }
     }
 }

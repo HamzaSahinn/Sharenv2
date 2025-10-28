@@ -1,4 +1,5 @@
-﻿using Sharenv.Domain.Models;
+﻿
+using Sharenv.Application.Models;
 
 namespace Sharenv.Application.Service
 {

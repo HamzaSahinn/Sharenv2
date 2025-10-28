@@ -1,5 +1,5 @@
-﻿using Sharenv.Domain.Entities;
-using Sharenv.Domain.Models;
+﻿using Sharenv.Application.Models;
+using Sharenv.Domain.Entities;
 
 namespace Sharenv.Application.Interfaces
 {

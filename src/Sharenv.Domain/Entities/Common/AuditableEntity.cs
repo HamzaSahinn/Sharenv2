@@ -1,4 +1,8 @@
 ﻿
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
+
 namespace Sharenv.Domain.Entities
 {
     public class AuditableEntity : BaseEntity
@@ -6,21 +10,33 @@ namespace Sharenv.Domain.Entities
         /// <summary>
         /// Gets or sets createdBy 
         /// </summary>
-        public int CreatedBy { get; set; }
+        [IgnoreDataMember]
+        [XmlIgnore]
+        [JsonIgnore]
+        public virtual int CreatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets createdAt
         /// </summary>
-        public DateTime? CreatedAt { get; set; }
+        [IgnoreDataMember]
+        [XmlIgnore]
+        [JsonIgnore]
+        public virtual DateTime? CreatedAt { get; set; }
 
         /// <summary>
         /// Gets or sets updatedBy
         /// </summary>
-        public int UpdatedBy { get; set; }
+        [IgnoreDataMember]
+        [XmlIgnore]
+        [JsonIgnore]
+        public virtual int UpdatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets updatedAt
         /// </summary>
-        public DateTime? UpdatedAt { get; set; }
+        [IgnoreDataMember]
+        [XmlIgnore]
+        [JsonIgnore]
+        public virtual DateTime? UpdatedAt { get; set; }
     }
 }

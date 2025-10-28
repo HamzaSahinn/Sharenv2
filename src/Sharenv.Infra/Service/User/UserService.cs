@@ -1,7 +1,7 @@
 ﻿using Sharenv.Application.Interfaces;
+using Sharenv.Application.Models;
 using Sharenv.Application.Validation;
 using Sharenv.Domain.Entities;
-using Sharenv.Domain.Models;
 using Sharenv.Infra.Data;
 
 namespace Sharenv.Infra.Service
