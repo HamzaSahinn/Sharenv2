@@ -12,12 +12,12 @@ namespace Sharenv.Infra.Service
 {
     public class EntityService<TEntity> : SharenvBaseService, IEntityService<TEntity> where TEntity : BaseEntity
     {
-        private MethodInfo? _orderBy = typeof(Queryable).GetMethods()
+        private static MethodInfo? _orderBy = typeof(Queryable).GetMethods()
                 .Where(m => m.Name == "OrderBy" && m.IsGenericMethodDefinition)
                 .Where(m => m.GetParameters().Length == 2)
                 .Single();
 
-        private MethodInfo? _orderByDescending = typeof(Queryable).GetMethods()
+        private static MethodInfo? _orderByDescending = typeof(Queryable).GetMethods()
                 .Where(m => m.Name == "OrderByDescending" && m.IsGenericMethodDefinition)
                 .Where(m => m.GetParameters().Length == 2)
                 .Single();
@@ -39,7 +39,7 @@ namespace Sharenv.Infra.Service
             return Execute<TEntity>(res =>
             {
                 var removed =_repositroy.Set<TEntity>().Remove(entity);
-                res.Value = (TEntity) removed.Entity;
+                res.Value = removed.Entity;
 
                 _repositroy.SaveChanges();
             });

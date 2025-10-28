@@ -13,5 +13,13 @@ namespace Sharenv.Application.Interfaces
         /// <param name="userId"></param>
         /// <returns></returns>
         public Result<PagedData<Circle>> QueryPublicCircles(CircleQueryContext queryContext);
+
+        /// <summary>
+        /// Query circles by query context and user
+        /// </summary>
+        /// <param name="queryContext"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public Result<PagedData<Circle>> QueryUserCircles(CircleQueryContext queryContext, int userId);
     }
 }
