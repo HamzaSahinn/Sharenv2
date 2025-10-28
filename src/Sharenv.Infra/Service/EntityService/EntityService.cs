@@ -4,14 +4,15 @@ using Sharenv.Application.Service;
 using Sharenv.Application.Validation;
 using Sharenv.Domain.Entities;
 using Sharenv.Domain.Models;
+using Sharenv.Infra.Data;
 
 namespace Sharenv.Infra.Service
 {
     public class EntityService<T> : SharenvBaseService, IEntityService<T> where T : BaseEntity
     {
-        protected DbContext _repositroy;
+        protected SharenvDbContext _repositroy;
 
-        public EntityService(DbContext repository) 
+        public EntityService(SharenvDbContext repository) 
         {
             _repositroy = repository;
         }
