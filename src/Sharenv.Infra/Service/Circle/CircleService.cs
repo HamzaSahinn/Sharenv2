@@ -1,17 +1,21 @@
-﻿using Sharenv.Application.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Sharenv.Application.Interfaces;
 using Sharenv.Application.Models;
 using Sharenv.Application.Models.Circle;
 using Sharenv.Application.Validation;
 using Sharenv.Domain.Entities;
+using Sharenv.Domain.Exceptions;
 using Sharenv.Infra.Data;
-using System.Transactions;
 
 namespace Sharenv.Infra.Service
 {
     public class CircleService : EntityService<Circle>, ICircleService
     {
-        public CircleService(SharenvDbContext repository) : base(repository)
+        private ICircleMemberService _circleMemberService;
+
+        public CircleService(ICircleMemberService circleMemberService, SharenvDbContext repository) : base(repository)
         {
+            _circleMemberService = circleMemberService;
         }
 
         /// <summary>
@@ -87,27 +91,68 @@ namespace Sharenv.Infra.Service
             {
                 ArgumentValidation.ThrowIfNull(entity);
                 ArgumentValidation.ThrowIfPositive(entity.Id);
-                
-                using (var scope = new TransactionScope())
+
+                ExecuteInDbTransaction(res =>
                 {
                     _repositroy.Circle.Add(entity);
                     _repositroy.SaveChanges();
 
-                    var member = new CircleMember() 
-                    { 
+                    var member = new CircleMember()
+                    {
                         CircleId = entity.Id,
-                        UserId = userId ,
+                        UserId = userId,
                         RoleEnum = CircleMemberRole.Admin,
                         JoinedAt = DateTime.Now,
                     };
 
                     _repositroy.CircleMember.Add(member);
-                    _repositroy.SaveChanges();
-
-                    scope.Complete();
-                }
+                }).ThrowIfError();
 
                 res.Value = entity;
+            });
+        }
+
+        /// <summary>
+        /// Delete circle with data
+        /// </summary>
+        /// <param name="circleId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="SharenvUnauthorizedEntityAccessException"></exception>
+        public Result<Circle> DeleteCircleWithData(int circleId, int userId)
+        {
+            return Execute<Circle>(res =>
+            {
+                ArgumentValidation.ThrowIfLessThan(circleId, 1);
+
+                var role = _circleMemberService.GetMemberRole(circleId, userId).ValueOrException;
+                if(role != CircleMemberRole.Admin)
+                {
+                    throw new SharenvUnauthorizedEntityAccessException();
+                }
+
+                var entity = _repositroy.Circle.FirstOrDefault(x => x.Id == circleId);
+                if(entity == null)
+                {
+                    res.AddError("Circle did not found");
+                    return;
+                }
+
+                var activityQuery = _repositroy.Activity.Where(x => x.CircleId == entity.Id);
+                var activityIds = activityQuery.Select(x => x.Id).ToList();
+
+                var momentQuery = _repositroy.Moment.Where(x => activityIds.Contains(x.ActivityId));
+                var momentIds = momentQuery.Select(x => x.Id).ToList();
+
+                ExecuteInDbTransaction(res =>
+                {
+                    momentQuery.ExecuteDelete();
+                    activityQuery.ExecuteDelete();
+
+                    //TODO: Delete disk data
+
+                    _repositroy.Circle.Remove(entity);
+                }).ThrowIfError();
             });
         }
     }

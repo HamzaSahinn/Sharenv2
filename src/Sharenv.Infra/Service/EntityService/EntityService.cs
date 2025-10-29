@@ -160,5 +160,58 @@ namespace Sharenv.Infra.Service
         {
             return ApplySorting(query, queryContext.SortBy, queryContext.IsAscending);
         }
+
+        /// <summary>
+        /// Execute given action in db transaction
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        protected Result<T> ExecuteInDbTransaction<T>(Action<Result<T>> action)
+        {
+            var result = new Result<T>();
+            using (var scope = _repositroy.Database.BeginTransaction())
+            {
+                try
+                {
+                    action(result);
+                    scope.Commit();
+                }
+                catch (Exception ex)
+                {
+                    scope.Rollback();
+                    result.AddException(ex);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Execute given action in db transaction
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        protected Result ExecuteInDbTransaction(Action<Result> action)
+        {
+            var result = new Result();
+            using (var scope = _repositroy.Database.BeginTransaction())
+            {
+                try
+                {
+                    action(result);
+                    _repositroy.SaveChanges();
+                    scope.Commit();
+                }
+                catch (Exception ex)
+                {
+                    scope.Rollback();
+                    result.AddException(ex);
+                }
+            }
+
+            return result;
+        }
     }
 }

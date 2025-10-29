@@ -24,7 +24,7 @@ namespace Sharenv.Application.Interfaces
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public Result IsValidLogin(string username, string password);
+        public Result<User> IsValidLogin(string username, string password);
 
 
     }

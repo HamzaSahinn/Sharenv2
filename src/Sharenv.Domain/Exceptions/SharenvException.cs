@@ -2,5 +2,9 @@
 {
     public class SharenvException : Exception
     {
+        public SharenvException(string? message) : base(message)
+        {
+            
+        }
     }
 }

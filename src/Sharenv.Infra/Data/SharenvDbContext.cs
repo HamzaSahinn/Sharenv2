@@ -48,6 +48,11 @@ namespace Sharenv.Infra.Data
         public DbSet<CircleMember> CircleMember { get; set; }
 
         /// <summary>
+        /// Gets or sets moments
+        /// </summary>
+        public DbSet<Moment> Moment { get; set; }
+
+        /// <summary>
         /// Apply audit entry rules
         /// </summary>
         protected void AuditEntry()

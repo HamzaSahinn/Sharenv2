@@ -32,9 +32,9 @@ namespace Sharenv.Infra.Service
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public Result IsValidLogin(string username, string password)
+        public Result<User> IsValidLogin(string username, string password)
         {
-            return Execute(res =>
+            return Execute<User>(res =>
             {
                 var user = _repositroy.User.FirstOrDefault(x => x.Username == username && x.Password == password);
                 if(user == null)
@@ -48,6 +48,8 @@ namespace Sharenv.Infra.Service
                     res.AddError($"User must validate email address");
                     return;
                 }
+
+                res.Value = user;
             });
         }
 

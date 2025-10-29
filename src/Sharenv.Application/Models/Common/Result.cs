@@ -1,4 +1,6 @@
 ﻿
+using Sharenv.Domain.Exceptions;
+
 namespace Sharenv.Application.Models
 {
     public class Result
@@ -55,6 +57,18 @@ namespace Sharenv.Application.Models
         {
             return string.Join(sep, Errors);
         }
+
+        /// <summary>
+        /// Throws if any errors exists
+        /// </summary>
+        /// <exception cref="SharenvException"></exception>
+        public void ThrowIfError()
+        {
+            if (!IsSucceded)
+            {
+                throw new SharenvException(FormatErrors());
+            }
+        }
     }
 
     public class Result<T> : Result
@@ -63,5 +77,37 @@ namespace Sharenv.Application.Models
         /// Gets or sets value
         /// </summary>
         public T Value { get; set; }
+
+        /// <summary>
+        /// Throw message exception if any or return result
+        /// </summary>
+        public T ValueOrException 
+        { 
+            get 
+            {
+                if (!IsSucceded)
+                {
+                    throw new SharenvMessageException(FormatErrors());
+                }
+
+                return Value;
+            } 
+        }
+
+        /// <summary>
+        /// Throw message exception if any, check value if null throw eception or return value
+        /// </summary>
+        public T ValueOrExceptionWithNullCheck
+        {
+            get
+            {
+                if(ValueOrException == null)
+                {
+                    throw new SharenvException("Value cannot be null");
+                }
+
+                return Value;
+            }
+        }
     }
 }

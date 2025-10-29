@@ -21,5 +21,14 @@ namespace Sharenv.Application.Interfaces
         /// <param name="userId"></param>
         /// <returns></returns>
         public Result<PagedData<Circle>> QueryUserCircles(CircleQueryContext queryContext, int userId);
+
+        /// <summary>
+        /// Delete circle with data
+        /// </summary>
+        /// <param name="circleId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="SharenvUnauthorizedEntityAccessException"></exception>
+        public Result<Circle> DeleteCircleWithData(int circleId, int userId)
     }
 }
