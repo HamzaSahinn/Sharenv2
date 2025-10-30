@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sharenv.Domain.Exceptions;
 
-namespace Sharenv.Application.ExceptionManager
+namespace Sharenv.Application
 {
     public class ExceptionManager : IExceptionManager
     {
