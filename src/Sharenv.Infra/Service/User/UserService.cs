@@ -32,24 +32,24 @@ namespace Sharenv.Infra.Service
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public Result<User> IsValidLogin(string username, string password)
+        public Result<LoginResult> IsValidLogin(string username, string password)
         {
-            return Execute<User>(res =>
+            return Execute<LoginResult>(res =>
             {
-                var user = _repositroy.User.FirstOrDefault(x => x.Username == username && x.Password == password);
-                if(user == null)
+                res.Value = new LoginResult();
+                res.Value.User = _repositroy.User.FirstOrDefault(x => x.Username == username && x.Password == password);
+                
+                if(res.Value.User == null)
                 {
-                    res.AddError($"User {username} not found");
-                    return;
+                    res.Value.IsSuccess = false;
+                    res.Value.FailedReason = LoginFailedReason.NotFound;
                 }
 
-                if (!user.IsEmailVerified)
+                if (!res.Value.User.IsEmailVerified)
                 {
-                    res.AddError($"User must validate email address");
-                    return;
+                    res.Value.IsSuccess = false;
+                    res.Value.FailedReason = LoginFailedReason.MailNotValidated;
                 }
-
-                res.Value = user;
             });
         }
 

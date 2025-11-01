@@ -10,4 +10,15 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sharenv.Application\Sharenv.Application.csproj" />
+    <ProjectReference Include="..\Sharenv.Core\Sharenv.Core.csproj" />
+    <ProjectReference Include="..\Sharenv.Domain\Sharenv.Domain.csproj" />
+    <ProjectReference Include="..\Sharenv.Infra\Sharenv.Infra.csproj" />
+  </ItemGroup>
+
 </Project>

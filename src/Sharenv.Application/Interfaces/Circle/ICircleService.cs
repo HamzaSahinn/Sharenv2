@@ -29,6 +29,6 @@ namespace Sharenv.Application.Interfaces
         /// <param name="userId"></param>
         /// <returns></returns>
         /// <exception cref="SharenvUnauthorizedEntityAccessException"></exception>
-        public Result<Circle> DeleteCircleWithData(int circleId, int userId)
+        public Result<Circle> DeleteCircleWithData(int circleId, int userId);
     }
 }
