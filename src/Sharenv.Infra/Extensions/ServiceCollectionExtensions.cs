@@ -3,8 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sharenv.Application.Configurations;
 using Sharenv.Application.Interfaces;
+using Sharenv.Application.Interfaces.AuthService;
 using Sharenv.Infra.Data;
 using Sharenv.Infra.Service;
+using Sharenv.Infra.Service.AuthService;
 
 namespace Sharenv.Infra.Extensions
 {
@@ -32,9 +34,12 @@ namespace Sharenv.Infra.Extensions
         /// <param name="services"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddInfrastructure(this IServiceCollection container, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection container, DbConfiguration config)
         {
-            container.AddDbContext<SharenvDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            container.AddDbContext<SharenvDbContext>(options =>
+            {
+                options.UseNpgsql(config.ConnectionString);
+            });
 
             return container;
         }
@@ -51,6 +56,8 @@ namespace Sharenv.Infra.Extensions
             container.AddScoped<ICircleMemberService, CircleMemberService>();
             container.AddScoped<IUserEntityService, UserService>();
             container.AddScoped<ICurrentUserService, CurrentUserService>();
+            container.AddScoped<IAuthService, AuthService>();
+            container.AddSingleton<IJwtTokenService, JwtTokenService>();
 
             return container;
         }

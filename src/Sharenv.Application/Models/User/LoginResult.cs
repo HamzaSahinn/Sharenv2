@@ -20,4 +20,12 @@ namespace Sharenv.Application.Models
         /// </summary>
         public User? User { get; set; } 
     }
+
+    public class LoginResult<T> : LoginResult
+    {
+        /// <summary>
+        /// Gets or sets data
+        /// </summary>
+        public T Data { get; set; }
+    }
 }

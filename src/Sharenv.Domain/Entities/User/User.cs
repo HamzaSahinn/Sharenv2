@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace Sharenv.Domain.Entities
 {
@@ -12,6 +15,9 @@ namespace Sharenv.Domain.Entities
         /// <summary>
         /// Gets or set password
         /// </summary>
+        [JsonIgnore]
+        [XmlIgnore]
+        [IgnoreDataMember]
         public string Password { get; set; }
 
         /// <summary>
@@ -22,6 +28,9 @@ namespace Sharenv.Domain.Entities
         /// <summary>
         /// Gets or sets emailVerified
         /// </summary>
+        [JsonIgnore]
+        [XmlIgnore]
+        [IgnoreDataMember]
         public bool IsEmailVerified { get; set; }
 
         /// <summary>

@@ -47,7 +47,7 @@
         /// <summary>
         /// Gets or sets data
         /// </summary>
-        T Data { get; set; }
+        public T Data { get; set; }
 
         /// <summary>
         /// Create success response with data
