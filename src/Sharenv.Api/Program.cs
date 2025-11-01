@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
+using Serilog;
+using Sharenv.Application;
 using Sharenv.Application.Configurations;
 using Sharenv.Application.Extensions;
 using Sharenv.Infra.Extensions;
@@ -15,6 +17,10 @@ namespace Sharenv.Api
             var builder = WebApplication.CreateBuilder(args);
             var authConfig = builder.Configuration.GetRequiredSection(AuthConfiguration.SECTION_NAME).Get<AuthConfiguration>();
             var dbConfig = builder.Configuration.GetRequiredSection(DbConfiguration.SECTION_NAME).Get<DbConfiguration>();
+
+            builder.Host.UseSerilog();
+
+            builder.Services.AddSingleton<IExceptionManager>(new ExceptionManager());
 
             builder.Services.AddAuthentication(options =>
             {
@@ -63,6 +69,10 @@ namespace Sharenv.Api
                          .AddControllers();
 
             var app = builder.Build();
+
+            Core.RegisterLogger(app.Logger);
+            Core.RegisterExceptionManager(app.Services.GetRequiredService<IExceptionManager>());
+
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
