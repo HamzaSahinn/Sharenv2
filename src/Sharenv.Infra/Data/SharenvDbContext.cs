@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sharenv.Application.Interfaces;
 using Sharenv.Domain.Entities;
+using Sharenv.Domain.Entities.DocumentConfig;
 
 namespace Sharenv.Infra.Data
 {
@@ -51,6 +52,11 @@ namespace Sharenv.Infra.Data
         /// Gets or sets moments
         /// </summary>
         public DbSet<Moment> Moment { get; set; }
+
+        /// <summary>
+        /// Gets or sets document configuration objects
+        /// </summary>
+        public DbSet<DocumentConfiguration> DocumentConfiguration { get; set; }
 
         /// <summary>
         /// Apply audit entry rules

@@ -128,5 +128,82 @@ namespace Sharenv.Application.Validation
                 throw new ArgumentException(message, paramName);
             }
         }
+
+        /// <summary>
+        /// Validates that a <see cref="Stream"/> is not null and can be read from.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream"/> object to validate.</param>
+        /// <param name="paramName">The name of the parameter. This is automatically set by the compiler.</param>
+        /// <returns>The original <see cref="Stream"/> if it passes validation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="stream"/> cannot be read.</exception>
+        [return: NotNull]
+        public static Stream ValidateStreamReadable([NotNull] Stream stream, [CallerArgumentExpression(nameof(stream))] string? paramName = null)
+        {
+            // Use your existing ThrowIfNull helper (assuming it's available)
+            ThrowIfNull(stream, paramName);
+
+            // Check for readability
+            if (!stream.CanRead)
+            {
+                throw new ArgumentException($"The stream passed for '{paramName}' must be readable (CanRead must be true).", paramName);
+            }
+
+            return stream;
+        }
+
+        /// <summary>
+        /// Validates that a <see cref="Stream"/> is not null and can be written to.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream"/> object to validate.</param>
+        /// <param name="paramName">The name of the parameter. This is automatically set by the compiler.</param>
+        /// <returns>The original <see cref="Stream"/> if it passes validation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="stream"/> cannot be written to.</exception>
+        [return: NotNull]
+        public static Stream ValidateStreamWritable([NotNull] Stream stream, [CallerArgumentExpression(nameof(stream))] string? paramName = null)
+        {
+            ThrowIfNull(stream, paramName);
+
+            // Check for writability
+            if (!stream.CanWrite)
+            {
+                throw new ArgumentException($"The stream passed for '{paramName}' must be writable (CanWrite must be true).", paramName);
+            }
+
+            return stream;
+        }
+
+        /// <summary>
+        /// Validates that a seekable <see cref="Stream"/> is not null, is readable, and contains data.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream"/> object to validate.</param>
+        /// <param name="paramName">The name of the parameter. This is automatically set by the compiler.</param>
+        /// <returns>The original <see cref="Stream"/> if it passes validation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="stream"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="stream"/> is unreadable, has zero length, or has already been fully consumed.</exception>
+        [return: NotNull]
+        public static Stream ValidateStreamHasContent([NotNull] Stream stream, [CallerArgumentExpression(nameof(stream))] string? paramName = null)
+        {
+            // 1. Check for null and readability first
+            ValidateStreamReadable(stream, paramName);
+
+            // 2. Check for content and position (only if seekable)
+            if (stream.CanSeek)
+            {
+                if (stream.Length == 0)
+                {
+                    throw new ArgumentException($"The seekable stream passed for '{paramName}' has a length of zero.", paramName);
+                }
+
+                if (stream.Position >= stream.Length)
+                {
+                    throw new ArgumentException($"The position of the seekable stream passed for '{paramName}' is at or beyond its end (already fully consumed).", paramName);
+                }
+            }
+            // If it's not seekable, we can't reliably check length/position, so we assume it's ready to read.
+
+            return stream;
+        }
     }
 }
