@@ -2,15 +2,23 @@
 using Sharenv.Application.Interfaces.Document;
 using Sharenv.Application.Models;
 using Sharenv.Application.Service;
+using Sharenv.Domain.Entities.DocumentConfig;
+using Sharenv.Infra.Service.Document;
 
 namespace Sharenv.Infra.Service
 {
     public class MomentDocumentService : SharenvBaseService, IMomentDocumentService
     {
         protected IDocumentStorageService _storageService;
+
+        protected DocumentConfiguration _documentConfig;
+
+        protected IDocumentStorageService _documentStorageService;
+
         public MomentDocumentService(IEnumerable<IDocumentStorageService> services)
         {
-            //TODO: get document strategy for moment documents and get suitable storage service via type parameter
+            _documentConfig = DocumentConfigurationService.CachedConfigurations.Values.FirstOrDefault(x => x.TypeEnum == DocumentType.Moment);
+            _documentStorageService = services.FirstOrDefault(x => x.Type == _documentConfig.StorageTypeEnum);
         }
 
         public Result Delete(int momentId, int userId)

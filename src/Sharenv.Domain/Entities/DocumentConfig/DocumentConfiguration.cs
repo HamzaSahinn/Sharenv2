@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sharenv.Domain.Entities.DocumentConfig
 {
-    public class DocumentConfiguration
+    public class DocumentConfiguration : BaseEntity
     {
         /// <summary>
         /// Gets or sets storage type
@@ -15,7 +15,7 @@ namespace Sharenv.Domain.Entities.DocumentConfig
         /// <summary>
         /// Gets or set stroage type
         /// </summary>
-        public int StorageType {  get; set; }
+        public int StorageType { get; set; }
 
         /// <summary>
         /// Gets or sets document type
