@@ -27,11 +27,9 @@ public class DocumentConfigurationService : EntityService<DocumentConfiguration>
 
         var allConfigs = this._repositroy.DocumentConfiguration.AsNoTracking().ToList();
 
-        // Populate the concurrent dictionary, assuming DocumentConfiguration has an Id property
         foreach (var config in allConfigs)
         {
-            // You can use the configuration's ID as the key for quick lookup
-            if (config.Id != 0) // Basic check for a valid key
+            if (config.Id != 0)
             {
                 _cachedConfigs.TryAdd(config.Id, config);
             }

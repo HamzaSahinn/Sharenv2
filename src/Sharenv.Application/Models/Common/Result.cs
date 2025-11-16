@@ -69,6 +69,16 @@ namespace Sharenv.Application.Models
                 throw new SharenvException(FormatErrors());
             }
         }
+
+        /// <summary>
+        /// Copy result to target result
+        /// </summary>
+        /// <param name="target"></param>
+        public void CopyTo(Result target)
+        {
+            target.Exception = Exception;
+            target.Errors.ForEach(e => target.AddError(e));
+        }
     }
 
     public class Result<T> : Result
@@ -108,6 +118,16 @@ namespace Sharenv.Application.Models
 
                 return Value;
             }
+        }
+
+        /// <summary>
+        /// Copy values and errors
+        /// </summary>
+        /// <param name="target"></param>
+        public void CopyToWithValue(Result<T> target) 
+        {
+            this.CopyTo(target);
+            target.Value = Value;
         }
     }
 }

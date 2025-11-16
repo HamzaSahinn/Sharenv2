@@ -21,24 +21,81 @@ namespace Sharenv.Infra.Service
             _documentStorageService = services.FirstOrDefault(x => x.Type == _documentConfig.StorageTypeEnum);
         }
 
+        /// <summary>
+        /// Delete moment data
+        /// </summary>
+        /// <param name="momentId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public Result Delete(int momentId, int userId)
         {
-            throw new NotImplementedException();
+            return Execute(res =>
+            {
+                string rootPath = ResolvePath(momentId, _documentConfig.Path);
+
+                _documentStorageService.Delete(rootPath).CopyTo(res);
+            });
         }
 
+        /// <summary>
+        /// Get moment data
+        /// </summary>
+        /// <param name="momentId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Result<byte[]> Get(int momentId, int userId)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Upload moment data
+        /// </summary>
+        /// <param name="momentId"></param>
+        /// <param name="data"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Result Upload(int momentId, byte[] data, int userId)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Upload moment data
+        /// </summary>
+        /// <param name="momentId"></param>
+        /// <param name="data"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Result Upload(int momentId, Stream data, int userId)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Resolve path from id and base path
+        /// </summary>
+        /// <param name="momentId"></param>
+        /// <param name="basePath"></param>
+        /// <returns></returns>
+        private string ResolvePath(int momentId, string basePath)
+        {
+            string paddedId = momentId.ToString($"D{12}");
+
+            var pathChunks = new List<string>();
+            for (int i = 0; i < paddedId.Length; i += 3)
+            {
+                pathChunks.Add(paddedId.Substring(i, 3));
+            }
+
+            string[] pathSegments = new string[pathChunks.Count + 1];
+            pathSegments[0] = basePath;
+            pathChunks.CopyTo(pathSegments, 1);
+
+            return Path.Combine(pathSegments);
         }
     }
 }

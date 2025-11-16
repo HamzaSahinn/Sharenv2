@@ -27,6 +27,10 @@ namespace Sharenv.Infra.Service.Document
                 {
                     File.Delete(pathIdentifier);
                 }
+                else if(Directory.Exists(pathIdentifier))
+                {
+                    Directory.Delete(pathIdentifier, true);
+                }
                 else
                 {
                     res.AddError($"Document not found at {pathIdentifier}");
